@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-iced = { version = "0.13.1", features = ["async-std", "debug", "tokio"] }
 roxmltree = "0.20.0"
+iced-xml-core = {path = "../iced-xml-core"}
