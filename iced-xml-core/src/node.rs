@@ -1,14 +1,17 @@
+#[derive(Debug, Copy, Clone, Default)]
 pub struct NodeLayout {
     pub align_x: HorizontalAlignment,
     pub align_y: VerticalAlignment,
     pub padding: Padding,
 }
 
+#[derive(Debug, Clone)]
 pub struct ComponentNode {
     pub node: Node,
     pub layout: NodeLayout,
 }
 
+#[derive(Debug, Clone)]
 pub enum Node {
     Button(ButtonNode),
     Text(TextNode),
@@ -16,24 +19,30 @@ pub enum Node {
     Row(RowNode),
 }
 
+#[derive(Debug, Clone)]
 pub struct WindowNode {
     pub content: Option<ComponentNode>,
+    pub message_type: String,
 }
 
+#[derive(Debug, Clone)]
 pub struct ButtonNode {
     pub content: String, // TODO: Make more general
     pub message: String,
 }
 
+#[derive(Debug, Clone)]
 pub struct TextNode {
     pub content: String,
     pub size: f32,
 }
 
+#[derive(Debug, Clone)]
 pub struct ColumnNode {
     pub content: Vec<Box<ComponentNode>>,
 }
 
+#[derive(Debug, Clone)]
 pub struct RowNode {
     pub content: Vec<Box<ComponentNode>>,
 }

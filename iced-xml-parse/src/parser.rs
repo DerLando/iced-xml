@@ -12,12 +12,16 @@ fn parse_window<'a>(document: roxmltree::Document<'a>) -> WindowNode {
     let root = document.root();
     let window = root.first_element_child().unwrap();
     assert!(window.tag_name().name() == "Window");
+    let message_type = window.attribute("Message").unwrap_or("").to_string();
 
     let content = window
         .first_element_child()
         .map(|node| parse_component(node));
 
-    WindowNode { content }
+    WindowNode {
+        content,
+        message_type,
+    }
 }
 
 fn parse_component<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> ComponentNode {
@@ -107,13 +111,13 @@ fn parse_row_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> RowNode {
     RowNode { content }
 }
 
-pub fn parse<P: AsRef<Path>>(path: P) -> WindowNode {
+pub fn parse_file<P: AsRef<Path>>(path: P) -> WindowNode {
     let content = std::fs::read_to_string(path).unwrap();
     let document = roxmltree::Document::parse(&content).unwrap();
     parse_window(document)
 }
 
-fn parse_document(content: &str) -> WindowNode {
+pub fn parse_str(content: &str) -> WindowNode {
     let document = roxmltree::Document::parse(content).unwrap();
     parse_window(document)
 }
@@ -129,7 +133,7 @@ mod test {
 </Window>
         "#;
 
-        let parsed = parse_document(raw_window);
+        let parsed = parse_str(raw_window);
     }
 
     #[test]
@@ -144,6 +148,6 @@ mod test {
 </Window>
         "#;
 
-        let parsed = parse_document(raw_window);
+        let parsed = parse_str(raw_window);
     }
 }

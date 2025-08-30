@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+iced = {version="0.13.1", features=["async-std"]}
+iced-xml-core = {path = "../iced-xml-core"}
+iced-xml-parse = {path = "../iced-xml-parse"}
