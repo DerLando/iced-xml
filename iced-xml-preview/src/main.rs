@@ -30,7 +30,7 @@ enum Message {
 
 #[derive(Debug, Default)]
 struct App {
-    parsed: Option<iced_xml_core::WindowNode>,
+    parsed: Option<iced_xml_core::Component>,
     path: Option<PathBuf>,
 }
 

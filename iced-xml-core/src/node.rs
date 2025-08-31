@@ -20,9 +20,10 @@ pub enum Node {
 }
 
 #[derive(Debug, Clone)]
-pub struct WindowNode {
+pub struct Component {
     pub content: Option<ComponentNode>,
-    pub message_type: String,
+    pub message_type: Option<String>,
+    pub model_type: Option<String>,
 }
 
 #[derive(Debug, Clone)]

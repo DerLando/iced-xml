@@ -4,27 +4,29 @@ use std::{
 };
 
 use iced_xml_core::{
-    ButtonNode, ColumnNode, ComponentNode, HorizontalAlignment, Node, NodeLayout, Padding, RowNode,
-    TextNode, VerticalAlignment, WindowNode,
+    ButtonNode, ColumnNode, Component, ComponentNode, HorizontalAlignment, Node, NodeLayout,
+    Padding, RowNode, TextNode, VerticalAlignment,
 };
 
-fn parse_window<'a>(document: roxmltree::Document<'a>) -> WindowNode {
+fn parse_component<'a>(document: roxmltree::Document<'a>) -> Component {
     let root = document.root();
     let window = root.first_element_child().unwrap();
-    assert!(window.tag_name().name() == "Window");
-    let message_type = window.attribute("Message").unwrap_or("").to_string();
+    assert!(window.tag_name().name() == "Component");
+    let message_type = window.attribute("Message").map(|attr| attr.to_string());
+    let model_type = window.attribute("Model").map(|attr| attr.to_string());
 
     let content = window
         .first_element_child()
-        .map(|node| parse_component(node));
+        .map(|node| parse_component_node(node));
 
-    WindowNode {
+    Component {
         content,
         message_type,
+        model_type,
     }
 }
 
-fn parse_component<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> ComponentNode {
+fn parse_component_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> ComponentNode {
     let layout = parse_layout(&node);
     let component = match node.tag_name().name() {
         "Button" => Node::Button(parse_button_node(node)),
@@ -94,7 +96,7 @@ fn parse_column_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> ColumnNod
         .descendants()
         .filter(|d| d.is_element())
         .skip(1)
-        .map(|c| Box::new(parse_component(c)))
+        .map(|c| Box::new(parse_component_node(c)))
         .collect::<Vec<_>>();
 
     ColumnNode { content }
@@ -105,21 +107,21 @@ fn parse_row_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> RowNode {
         .descendants()
         .filter(|d| d.is_element())
         .skip(1)
-        .map(|c| Box::new(parse_component(c)))
+        .map(|c| Box::new(parse_component_node(c)))
         .collect::<Vec<_>>();
 
     RowNode { content }
 }
 
-pub fn parse_file<P: AsRef<Path>>(path: P) -> WindowNode {
+pub fn parse_file<P: AsRef<Path>>(path: P) -> Component {
     let content = std::fs::read_to_string(path).unwrap();
     let document = roxmltree::Document::parse(&content).unwrap();
-    parse_window(document)
+    parse_component(document)
 }
 
-pub fn parse_str(content: &str) -> WindowNode {
+pub fn parse_str(content: &str) -> Component {
     let document = roxmltree::Document::parse(content).unwrap();
-    parse_window(document)
+    parse_component(document)
 }
 
 #[cfg(test)]
@@ -127,10 +129,10 @@ mod test {
     use super::*;
 
     #[test]
-    fn can_parse_empty_window() {
+    fn can_parse_empty_component() {
         let raw_window = r#"<?xml version="1.0" encoding="UTF-8"?> 
-<Window Message="Message">
-</Window>
+<Component Message="Message">
+</Component>
         "#;
 
         let parsed = parse_str(raw_window);
@@ -139,13 +141,13 @@ mod test {
     #[test]
     fn can_parse_simple_window() {
         let raw_window = r#"<?xml version="1.0" encoding="UTF-8"?> 
-<Window Message="Message">
+<Component Message="Message">
   <Column Padding="20" AlignX="Center">
     <Button Message="Increment">Increment</Button>
     <Text Size="50" Content="{self.value}" />
     <Button Message="Decrement">Decrement</Button>
   </Column>
-</Window>
+</Component>
         "#;
 
         let parsed = parse_str(raw_window);
