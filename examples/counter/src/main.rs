@@ -1,9 +1,11 @@
 use iced_xml_core::IcedComponent;
+use iced_xml_derive::Component;
 fn main() -> iced::Result {
     iced::run("Counter", Counter::update, Counter::view)
 }
 
-#[derive(Default)]
+#[derive(Default, Component)]
+#[source = "counter.ixml"]
 struct Counter {
     value: i64,
 }

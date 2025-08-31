@@ -1,0 +1,15 @@
+[package]
+name = "iced-xml-derive"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.101"
+quote = "1.0.40"
+syn = {version = "2.0.106", features = ["derive"]}
+proc-macro-error = { version = "1" }
+iced-xml-core = {path="../iced-xml-core"}
+iced-xml-parse = {path="../iced-xml-parse"}
