@@ -1,4 +1,4 @@
 [workspace]
 resolver = "3"
-members= [ "examples/counter", "iced-xml-core","iced-xml-parse", "iced-xml-preview"]
+members= [ "examples/counter", "examples/todos", "iced-xml-core","iced-xml-parse", "iced-xml-preview"]
 

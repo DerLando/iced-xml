@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Component Model="Task" Message="TaskMessage">
+  <Match Value="{&self.state}">
+    <MatchCase Case="Idle">
+      <Row Spacing="20" AlignY="Center">
+        <CheckBox Description="{&self.description}" IsChecked="{self.completed}" Width="Fill" Size="17" Message="Completed" />
+        <Button Message="Edit" Padding="10" Content="{edit_icon()}" />
+      </Row>
+    </MatchCase>
+    <MatchCase Case="Editing">
+      <Row Spacing="20" AlignY="Center">
+        <TextInput Id="{self.id}" InputMessage="DescriptionEdited" SubmitMessage="FinishEdition" Padding="10" />
+        <Button Message="Edit" Padding="10">
+          <Row Spacing="10" AlignY="Center">
+            <Text Content="{delete_icon()}" />
+            <Text>Delete</Text>
+          </Row>
+        </Button>
+      </Row>
+    </MatchCase>
+  </Match>
+</Component>

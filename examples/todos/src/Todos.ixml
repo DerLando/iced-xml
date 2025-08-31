@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Component Model="Todos" Message="Message">
+  <Match Value="{self}">
+    <MatchCase Case="Loading">
+      <Text Width="Fill" AlignX="Center" Size="50">Loading...</Text>
+    </MatchCase>
+    <MatchCase Case="Loaded" Destructure="{State {input_value, filter, tasks, ..}}">
+      <KeyedColumn Items="{tasks}"> TODO: Think about how to write this in xml. Should be flexible enough,
+        that we can either create a component template 'inline', or use a component.
+    </MatchCase>
+  </Match>
+</Component>
