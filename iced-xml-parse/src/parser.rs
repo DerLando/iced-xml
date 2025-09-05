@@ -78,7 +78,10 @@ fn parse_button_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> ButtonNod
 
 fn parse_text_node<'a, 'input>(node: roxmltree::Node<'a, 'input>) -> TextNode {
     const DEFAULT_SIZE: f32 = 10.0;
-    let content = node.text().unwrap_or("");
+    let content = match node.text() {
+        Some(text) => text,
+        None => node.attribute("Content").unwrap_or(""),
+    };
     let size = node
         .attribute("Size")
         .map(|s| s.parse::<f32>().unwrap_or(DEFAULT_SIZE))

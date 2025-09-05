@@ -56,8 +56,15 @@ pub(crate) fn view_button_node(node: &ButtonNode) -> TokenStream {
 pub(crate) fn view_text_node(node: &TextNode) -> TokenStream {
     let content =
         parse_expr_or_lit(&node.content).unwrap_or(syn::parse_str::<syn::Expr>("\"\"").unwrap());
+    let size = syn::parse_str::<syn::Expr>(&format!("size({})", node.size)).ok();
+    let size_call = if size.is_some() {
+        Some(syn::Token![.](Span::call_site()))
+    } else {
+        None
+    };
     quote!(
         ::iced::widget::text(#content)
+        #size_call #size
     )
 }
 
