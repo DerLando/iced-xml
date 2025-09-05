@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<Window Message="Message">
+<Component Message="Message">
   <Column Padding="20" AlignX="Center">
     <Button Message="Increment">Increment</Button>
     <Text Size="50" Content="{self.value}" />
     <Button Message="Decrement">Decrement</Button>
   </Column>
-</Window>
+</Component>
 
