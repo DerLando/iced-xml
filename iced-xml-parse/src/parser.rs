@@ -152,4 +152,16 @@ mod test {
 
         let parsed = parse_str(raw_window);
     }
+
+    #[test]
+    fn can_parse_button_node_content() {
+        let raw_button = r#"<?xml version="1.0" encoding="UTF-8"?>
+        <Button>Hello</Button>
+        "#;
+
+        let tree = roxmltree::Document::parse(raw_button).unwrap();
+        let parsed_button = parse_button_node(tree.root_element());
+
+        assert_eq!(parsed_button.content, "Hello".to_string());
+    }
 }

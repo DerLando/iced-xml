@@ -13,3 +13,6 @@ syn = {version = "2.0.106", features = ["derive"]}
 proc-macro-error = { version = "1" }
 iced-xml-core = {path="../iced-xml-core"}
 iced-xml-parse = {path="../iced-xml-parse"}
+
+[dev-dependencies]
+prettyplease = "0.2.37"

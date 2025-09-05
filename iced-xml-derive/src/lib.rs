@@ -1,4 +1,5 @@
 use std::{any::Any, ops::Deref};
+mod view;
 
 use proc_macro::TokenStream;
 use proc_macro_error::abort;
@@ -39,18 +40,21 @@ fn derive_component_struct(
         Some(ty) => ty,
         None => "()".to_string(),
     };
+    let message = syn::parse_str::<syn::Path>(&message).unwrap();
+    let view = view::view_component_node(&component.content.unwrap());
 
     quote!(
-    impl ::iced_xml_core::Component for #name {
-        type Message = #message
+    impl ::iced_xml_core::IcedComponent for #name {
+        type Message = crate::#message;
         fn view(&self) -> ::iced::Element<'_, Self::Message> {
-
+            #view
+            .into()
         }
     }
         )
 }
 
-#[proc_macro_derive(Component, attributes(source))]
+#[proc_macro_derive(IcedComponent, attributes(source))]
 pub fn derive_component(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     match derive_component_impl(input) {
@@ -82,7 +86,8 @@ fn parse_template_attribute(attr: &syn::Attribute) -> Result<iced_xml_core::Comp
     // let path_span = proc_macro::Span::call_site();
     // let source_file = path_span.type_id()
 
-    let toml_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
+    let toml_dir =
+        std::path::Path::new(std::env::var("CARGO_MANIFEST_DIR").unwrap().as_str()).join("src");
 
     let error = syn::Error::new(attr.span(), "Invalid syntax");
 
@@ -123,6 +128,15 @@ fn parse_template_attribute(attr: &syn::Attribute) -> Result<iced_xml_core::Comp
 #[proc_macro_attribute]
 pub fn template(attr: TokenStream, item: TokenStream) -> TokenStream {
     item
+}
+
+#[cfg(test)]
+pub(crate) fn prettyprint(tokens: proc_macro2::TokenStream) -> String {
+    use syn::parse::Parse;
+
+    // prettyplease::unparse(&syn::parse_str::<syn::File>(stringify!(tokens)).unwrap())
+
+    stringify!(tokens).to_string()
 }
 
 #[cfg(test)]
